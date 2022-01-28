@@ -15,7 +15,6 @@ const db = getFirestore(app);
 export async function getFavoriteGIFs() {
   const favoritesCol = collection(db, 'favorites');
   const favoritesSnapshot = await getDocs(favoritesCol);
-  console.log(favoritesSnapshot)
   const favorites = favoritesSnapshot.docs.map(doc => doc.data());
   return favorites;
 }

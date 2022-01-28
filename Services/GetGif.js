@@ -2,7 +2,7 @@ const APIKey = "GZWDTWWY37JO";
 const axios = require('axios');
 
 export async function searchGif(searchTerm) {
-  const lmt = 4;
+  const lmt = 10;
   const search_url = "https://g.tenor.com/v1/search?q=" + searchTerm + "&key=" +
             APIKey + "&limit=" + lmt;
   return axios.get(search_url)
