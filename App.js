@@ -2,7 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Image, TextInput, Button, Dimensions, TouchableOpacity } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { searchGif } from './Services/GetGif';
-import { getFavoriteGIFs } from './Services/Firebase'
+import { getFavorite, addFavorite, removeFavorite } from './Services/Firebase'
 let windowSize = Dimensions.get('window')
 
 export default function App() {
@@ -15,7 +15,7 @@ export default function App() {
     searchGif(searchTerm)
     .then(items => {
       setSearchResults(items.results)
-      getFavoriteGIFs()
+      getFavorite()
       .then(favorites => {
         setFavorites(favorites)
       })
@@ -31,11 +31,28 @@ export default function App() {
     })
   }
 
+  const onFavoriteClick = (gif) => {
+    addFavorite({id: gif.id, url: gif.media[0].tinygif.url})
+    .then(() => getFavorite()
+      .then(favorites => {
+        setFavorites(favorites)
+      })
+    )
+  }
+  const onDeleteClick = (gif) => {
+    removeFavorite({id: gif.id, url: gif.url})
+    .then(() => getFavorite()
+      .then(favorites => {
+        setFavorites(favorites)
+      })
+    )
+  }
+
   const renderSearchResults = (results) => {
     return (
     <View style={styles.gifRow}>
       {results.map(result => 
-        <TouchableOpacity key={result.id} activeOpacity = { .5 } onPress={()=>console.log(result.id) }>
+        <TouchableOpacity key={result.id} activeOpacity = { .5 } onPress={() => onFavoriteClick(result) }>
           <Image source={{uri: result.media[0].tinygif.url}}
           style={{width: 100, height:100 }}/>
         </TouchableOpacity>)
@@ -48,7 +65,7 @@ export default function App() {
     return (
         <View style={styles.gifRow}>
           {favorites.map(favorite => 
-            <TouchableOpacity key={favorite.id} activeOpacity = { .5 } onPress={()=>console.log(favorite.id) }>
+            <TouchableOpacity key={favorite.id} activeOpacity = { .5 } onPress={()=> onDeleteClick(favorite) }>
               <Image source={{uri: favorite.url}}
               key={favorite.id}
               style={{width: 100, height:100 }}/>
@@ -60,7 +77,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <Text>Search and Save your Favorite GIFs!</Text>
+      <Text style={styles.title}>Search and Save your Favorite GIFs!</Text>
       <View style={styles.inputRow}>
         <TextInput
           onChangeText={setSearchTerm}
@@ -73,9 +90,9 @@ export default function App() {
           color="#841584"
         />
       </View>
-      <Text>Search Results(Press GIF to Favorite):</Text>
+      <Text style={styles.title}>Search Results(Press GIF to Favorite):</Text>
       {renderSearchResults(searchResults)}
-      <Text>Favorite GIFs(Press GIF to Unfavorite):</Text>
+      <Text style={styles.title}>Favorite GIFs(Press GIF to Unfavorite):</Text>
       {renderFavorites(favorites)}
       <StatusBar style="auto" />
     </View>
@@ -90,7 +107,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   inputRow: {
-    width: windowSize.width - 70,
     flexDirection: "row",
     alignItems: 'center',
     justifyContent: 'center'
@@ -103,7 +119,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   input: {
-    width: windowSize.width - 70,
+    width: windowSize.width * 0.7,
     color: '#555555',
     paddingRight: 10,
     paddingLeft: 10,
@@ -115,4 +131,8 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     backgroundColor: '#ffffff'
   },
+  title: {
+    fontWeight: 'bold',
+    fontSize: 17
+  }
 });

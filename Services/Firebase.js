@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, getDocs } from 'firebase/firestore/lite';
+import { getFirestore, collection, getDocs, setDoc, deleteDoc, doc } from 'firebase/firestore/lite';
 const firebaseConfig = {
   apiKey: "AIzaSyDeLIh3Q_6xwf84HYzhyQkK8VWfiXPSwE0",
   authDomain: "gif-searcher-dec48.firebaseapp.com",
@@ -12,9 +12,19 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-export async function getFavoriteGIFs() {
+export async function getFavorite() {
   const favoritesCol = collection(db, 'favorites');
   const favoritesSnapshot = await getDocs(favoritesCol);
   const favorites = favoritesSnapshot.docs.map(doc => doc.data());
   return favorites;
+}
+
+export async function addFavorite(data) {
+  await setDoc(doc(db, "favorites", data.id), data);
+  return;
+}
+
+export async function removeFavorite(data) {
+  await deleteDoc(doc(db, "favorites", data.id));
+  return;
 }
