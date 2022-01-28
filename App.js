@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Image, TextInput, Button, Dimensions } from 'react-native';
+import { StyleSheet, Text, View, Image, TextInput, Button, Dimensions, TouchableOpacity } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { searchGif } from './Services/GetGif';
 import { getFavoriteGIFs } from './Services/Firebase'
@@ -34,9 +34,11 @@ export default function App() {
   const renderSearchResults = (results) => {
     return (
     <View style={styles.gifRow}>
-      {results.map(result => <Image source={{uri: result.media[0].tinygif.url}}
-      key={result.id}
-      style={{width: 100, height:100 }}/>)
+      {results.map(result => 
+        <TouchableOpacity key={result.id} activeOpacity = { .5 } onPress={()=>console.log(result.id) }>
+          <Image source={{uri: result.media[0].tinygif.url}}
+          style={{width: 100, height:100 }}/>
+        </TouchableOpacity>)
       }
     </View>
     
@@ -44,20 +46,22 @@ export default function App() {
   }
   const renderFavorites = (favorites) => {
     return (
-    <View style={styles.gifRow}>
-      {favorites.map(favorite => <Image source={{uri: favorite.url}}
-      key={favorite.id}
-      style={{width: 100, height:100 }}/>)
-      }
-    </View>
-    
+        <View style={styles.gifRow}>
+          {favorites.map(favorite => 
+            <TouchableOpacity key={favorite.id} activeOpacity = { .5 } onPress={()=>console.log(favorite.id) }>
+              <Image source={{uri: favorite.url}}
+              key={favorite.id}
+              style={{width: 100, height:100 }}/>
+            </TouchableOpacity>
+          )}
+        </View>
     )
   }
 
   return (
     <View style={styles.container}>
       <Text>Search and Save your Favorite GIFs!</Text>
-      <View style={styles.gifRow}>
+      <View style={styles.inputRow}>
         <TextInput
           onChangeText={setSearchTerm}
           value={searchTerm}
@@ -69,8 +73,9 @@ export default function App() {
           color="#841584"
         />
       </View>
+      <Text>Search Results(Press GIF to Favorite):</Text>
       {renderSearchResults(searchResults)}
-      <Text>Favorite GIFs</Text>
+      <Text>Favorite GIFs(Press GIF to Unfavorite):</Text>
       {renderFavorites(favorites)}
       <StatusBar style="auto" />
     </View>
@@ -83,6 +88,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  inputRow: {
+    width: windowSize.width - 70,
+    flexDirection: "row",
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   gifRow: {
     width: windowSize.width - 70,

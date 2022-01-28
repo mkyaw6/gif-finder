@@ -12,10 +12,6 @@ export async function searchGif(searchTerm) {
       const result = res.data;
       // console.log(result)
       return result
-
-      // for(user of users) {
-      //   console.log(`Got user with id: ${user.id}, name: ${user.name}`);
-      // }
     })
     .catch(err => {
       console.log('Error: ', err.message);
