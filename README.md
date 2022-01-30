@@ -10,4 +10,4 @@ To Run:
 * Using your device's QR code scanner, scan the qr code on the terminal window running the server
 
 ## Peer reviewer/collaborator
-[Faris Durrani](https://github.com/farisdurrani/) 1/30/2022
+[Faris Durrani](https://github.com/farisdurrani/) 1/30/2022 903435920
